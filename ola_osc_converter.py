@@ -20,7 +20,8 @@ from ola.ClientWrapper import ClientWrapper
 # from pythonosc import udp_client
 
 # pyOSC
-import OSC
+from OSC import OSCClient
+from OSC import OSCMessage
 
 # config
 osc_target_ip = "192.168.178.55"
@@ -37,10 +38,11 @@ def NewData(data):
     # python-osc
     # osc_client.send_message("/filter", value)
     # pyOSC
-    oscmsg = OSC.OSCMessage()
+    oscmsg = OSCMessage()
     oscmsg.setAddress("/1/fader1")
     oscmsg.append(value)
     osc_client.send(oscmsg)
+
 
 
 ##########################################
@@ -57,7 +59,7 @@ if __name__ == '__main__':
     # python-osc
     # osc_client = udp_client.SimpleUDPClient(osc_target_ip, osc_target_port)
     # pyOSC
-    osc_client = OSC.OSCClient()
+    osc_client = OSCClient()
     osc_client.connect((osc_target_ip, osc_target_port))
 
     # init ola client
