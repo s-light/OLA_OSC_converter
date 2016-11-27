@@ -33,16 +33,49 @@ ola_input_universe = 1
 def NewData(data):
     global osc_client
     # print("data: {}".format(data))
-    value = data[0] / 255
-    # print("value: {}".format(value))
-    # python-osc
-    # osc_client.send_message("/filter", value)
-    # pyOSC
-    oscmsg = OSCMessage()
-    oscmsg.setAddress("/1/fader1")
-    oscmsg.append(value)
-    osc_client.send(oscmsg)
 
+    # simple example for on channel
+    # value = data[0] / 255
+    # # print("value: {}".format(value))
+    # # python-osc
+    # # osc_client.send_message("/filter", value)
+    # # pyOSC
+    # oscmsg = OSCMessage()
+    # oscmsg.setAddress("/1/fader1")
+    # oscmsg.append(value)
+    # osc_client.send(oscmsg)
+
+    # more complex example with multiple channels:
+    # dmxch   - function
+    # 0       - ch 01 mix fader
+    # 1       - ch 01 mix on (mute)
+    # first check that data has all needed information.
+    if len(data) >= 1:
+        # all infos available
+        # set channel 01 fader
+        # ch/01/mix/fader/ [0.0,1.0] fader(1024)"
+        # convert channel level from 0..255 to 0..1
+        ch_value = data[0] / 255
+        oscmsg = OSCMessage()
+        oscmsg.setAddress("ch/01/mix/fader")
+        oscmsg.append(ch_value)
+        osc_client.send(oscmsg)
+        print(oscmsg)
+    if len(data) >= 2:
+        # all infos available
+        # set channel 01 mute
+        oscmsg = OSCMessage()
+        oscmsg.setAddress("ch/01/mix/on")
+        if data[1] is 0:
+            # channel active
+            oscmsg.append(1)
+            osc_client.send(oscmsg)
+            print(oscmsg)
+        elif data[1] is 255:
+            # channel off
+            oscmsg.append(0)
+            osc_client.send(oscmsg)
+            print(oscmsg)
 
 
 ##########################################
